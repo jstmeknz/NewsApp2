@@ -167,7 +167,7 @@ public class DataQuery {
                 String title = resultObject.getString("webTitle");
                 //get url for individual story so when clicked will take user to web url
                 String url = resultObject.getString("webUrl");
-                //
+                //Extract at tags > webTitle > to get Author
                 JSONArray tagArray = resultObject.getJSONArray("tags");
 
                 String authorName = "";
@@ -184,10 +184,6 @@ public class DataQuery {
 //                JSONObject thumb = resultObject.getJSONObject("thumbnail");
                 String thumbnail = fieldObject.getString("thumbnail");
 
-
-//                    thumbnail = fieldObject.getString("thumbnail");
-
-
                 newsList.add(new News(section, date, title, url, authorName, getBitmap(thumbnail)));
             }
         } catch (JSONException e) {
@@ -195,9 +191,11 @@ public class DataQuery {
         }
         return newsList;
     }
+
+    //this defines what to do with thumbnail url in order to display in layout
     private static Bitmap getBitmap(String originalUrl) {
         Bitmap bitmap = null;
-        if(!"".equals(originalUrl)) {
+        if (!"".equals(originalUrl)) {
             InputStream inputStream = null;
             try {
                 inputStream = new URL(originalUrl).openStream();
@@ -208,14 +206,16 @@ public class DataQuery {
         }
         return bitmap;
     }
+
     //Format the date for proper display
     private static String formatDate(String dateFormat) {
         String jsonDate = "yyyy-mm-dd'T'HH:mm:ss'Z'";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(jsonDate, Locale.getDefault());
         try {
             Date parsedDate = simpleDateFormat.parse(dateFormat);
-            String parsedDatePattern = "MMM dd yyyy";
+            String parsedDatePattern = "M dd y";
             SimpleDateFormat formatJsonDate = new SimpleDateFormat(parsedDatePattern, Locale.getDefault());
+
             return formatJsonDate.format(parsedDate);
         } catch (ParseException e) {
             Log.e("DataQuery", "~*&~*&~*&Error parsing JSON date: ", e);
@@ -223,8 +223,3 @@ public class DataQuery {
         }
     }
 }
-//    String thumbnail = "";
-//                if(results.getJSONObject(i).has("fields")) {
-//                        JSONObject fields = currentArticle.getJSONObject("fields");
-//                        thumbnail = fields.getString("thumbnail");
-//                        }
